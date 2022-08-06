@@ -6,6 +6,7 @@ namespace App\DTO;
 
 use App\Service\DatePeriodParser;
 use App\Service\DayParser;
+use App\Service\SubjectParser;
 
 class StudentInput extends BaseInput
 {
@@ -16,7 +17,7 @@ class StudentInput extends BaseInput
 	private string $subject;
 	private ?string $timeStart;
 	private ?string $timeEnd;
-	private ?int $timeType;
+	private int $timeType = 0;
 	private array $days = [];
 
 	public function __construct(
@@ -33,7 +34,7 @@ class StudentInput extends BaseInput
 		$this->email = $contactMail;
 		$this->name = $name;
 		$this->grade = (int)trim($grade);
-		$this->subject = $subject;
+		$this->subject = (new SubjectParser())->parse($subject)->getSubject();
 
 		$periodParser = (new DatePeriodParser())->parseTimePeriod($timePeriod);
 		$this->timeStart = $periodParser->getTimeStart();
@@ -86,7 +87,7 @@ class StudentInput extends BaseInput
 		return $this->timeEnd;
 	}
 
-	public function getTimeType(): ?string
+	public function getTimeType(): ?int
 	{
 		return $this->timeType;
 	}

@@ -23,7 +23,7 @@ class TeacherInput extends BaseInput
 		$this->createdAt = $createdAt;
 		$this->fullName = $fullName;
 		$this->subjects = array_map(static function (string $subject): string {
-			return (new SubjectParser())->parseLine($subject)->getSubject();
+			return (new SubjectParser())->parse($subject)->getSubject();
 		}, explode(',', $subjectsLine));
 		$this->grades = array_map(static function (string $grade): int {
 			return (int)trim($grade);

@@ -22,7 +22,7 @@ class SubjectParser
 		return $this->subjects;
 	}
 
-	public function parseLine(string $subject): self
+	public function parse(string $subject): self
 	{
 		$subject = str_replace(['язык'], '', $subject);
 		$subject = mb_strtolower($subject);
