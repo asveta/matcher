@@ -25,7 +25,10 @@ class MatcherService
 
 		foreach ($teachers as $teacher) {
 			foreach ($teacher->getSubjects() as $subject) {
-				$teachersBySubject[$subject][] = $teacher;
+				foreach ($teacher->getGrades() as $grade) {
+					$tCriteria = $subject . '_' . $grade;
+					$teachersBySubject[$tCriteria][] = $teacher;
+				}
 			}
 		}
 
@@ -33,26 +36,29 @@ class MatcherService
 		foreach ($students as $student) {
 			$stSubject = $student->getSubject();
 			$stType = $student->getTimeType();
+			$stGrade = $student->getGrade();
 
-			$studentsByKey[$stSubject][$stType][] = $student;
+			$stCriteria = sprintf('%s_%s_%s', $stSubject, $stGrade, $stType);
+			$studentsByKey[$stCriteria][] = $student;
 		}
 
-		foreach ($studentsByKey as $subject => $studentsByType) {
-			foreach ($studentsByType as $type => $students) {
-				$teachers = $teachersBySubject[$subject] ?? [];
+		foreach ($studentsByKey as $stCriteria => $students) {
+			[$subject, $grade, $stType] = explode('_', $stCriteria);
+			$teachers = $teachersBySubject[$subject .'_' . $grade] ?? [];
 
-				// TODO: implement algorithm
-				$chosenTeacher = $teachers[0] ?? null;
+			// TODO: implement algorithm
+			/** @var TeacherInput $chosenTeacher */
+			$chosenTeacher = $teachers[0] ?? null;
 
-				if (!$chosenTeacher) {
-					continue;
-				}
+			if (!$chosenTeacher) {
+				continue;
+			}
 
-				foreach ($students as $student) {
+			foreach ($students as $student) {
 
-					// TODO: use keys
-					$this->groups[$subject][$chosenTeacher->getFullName()][] = $student;
-				}
+				// TODO: use keys
+				$teacherKey = $chosenTeacher->getFullName() . '_' . $chosenTeacher->getCreatedAt();
+				$this->groups[$subject . '_' . $grade][$teacherKey][] = $student;
 			}
 		}
 

@@ -27,16 +27,12 @@ class DatePeriodParser
 		$this->timeStart = isset($parts[0]) ? trim($parts[0]) : null;
 		$this->timeEnd = isset($parts[1]) ? trim($parts[1]) : null;
 
-		if (!$this->timeEnd) {
-			var_dump($timePeriod);
-			die();
-		}
 		[$hours, $minutes] = array_pad(explode(':', $this->timeEnd), 2, null);
 		$hours = (int)$hours;
 
-		if ($hours <= 13 && $hours >= 9) {
+		if ($hours <= 13 && $hours >= 6) {
 			$this->periodType = self::TYPE_MORNING;
-		} elseif ($hours >= 14 && $hours <= 18) {
+		} elseif ($hours <= 18) {
 			$this->periodType = self::TYPE_DAY;
 		} else {
 			$this->periodType = self::TYPE_EVENING;

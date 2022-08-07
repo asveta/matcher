@@ -45,23 +45,31 @@ $groups = $service->getGroups();
 
 echo "## Выкладчыкі:\n";
 
-foreach ($groups as $subject => $students) {
-	foreach ($students as $teacher => $student) {
+foreach ($groups as $subjectKey => $students) {
+	[$subject, $grade] = explode('_', $subjectKey);
+	foreach ($students as $teacherKey => $student) {
+		$teacher = explode('_', $teacherKey)[0];
 		echo str_pad($subject, 16, ' ') . ' | ' .
-			str_pad($teacher, 16, ' ') . ' | ' .
-			count($students) . PHP_EOL;
+			'Клас: ' . str_pad($grade, 2, ' ') . ' | ' .
+			str_pad($teacher, 32, ' ') . ' | ' .
+			'Навучэнцаў: ' . count($student) . PHP_EOL;
 	}
 }
 
 echo "\n";
+echo "\n";
 echo "## Навучэнцы:\n";
 
 foreach ($groups as $subject => $students) {
+
+	echo "\n";
+	echo "## Група: $subject \n";
+
 	foreach ($students as $teacher => $studentList) {
 		foreach ($studentList as $student) {
 			/** @var StudentInput $student */
-			echo str_pad($student->getName(), 16, ' ') . ' | ' .
-				str_pad($student->getSubject(), 16, ' ') . ' | ' .
+			echo '| ' . str_pad($student->getName(), 20, ' ') . ' | ' .
+				str_pad($student->getEmail(), 24, ' ') . ' | ' .
 				str_pad($student->getTimeStart(), 4, ' ') . ' - ' .
 				str_pad($student->getTimeEnd(), 4, ' ') . ' | ' .
 				PHP_EOL;
